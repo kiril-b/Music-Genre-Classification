@@ -1,0 +1,6 @@
+FEATURES_PATH = '../data/fma_metadata/features.csv'
+GENRES_PATH = '../data/fma_metadata/genres.csv'
+TRACKS_PATH = '../data/fma_metadata/raw_tracks.csv'
+ALBUMS_PATH = '../data/fma_metadata/raw_albums.csv'
+ARTISTS_PATH = '../data/fma_metadata/raw_artists.csv'
+NOT_FOUND_PATH = '../data/fma_metadata/not_found.pickle'
