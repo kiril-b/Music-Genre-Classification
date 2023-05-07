@@ -4,3 +4,7 @@ TRACKS_PATH = '../data/fma_metadata/raw_tracks.csv'
 ALBUMS_PATH = '../data/fma_metadata/raw_albums.csv'
 ARTISTS_PATH = '../data/fma_metadata/raw_artists.csv'
 NOT_FOUND_PATH = '../data/fma_metadata/not_found.pickle'
+
+TRACKS_PATH_PROCESSED = '../data/processed_data/processed_tracks.csv'
+ALBUMS_PATH_PROCESSED = '../data/processed_data/processed_albums.csv'
+ARTISTS_PATH_PROCESSED = '../data/processed_data/processed_artists.csv'
