@@ -28,7 +28,7 @@ class MissingValuesUtil:
     def barplot_mv(self, w, h):
         plt.figure(figsize=(w, h))
         temp_df = self.get_mvdf_missing_only().sort_values(by='proportion (%)', ascending=False)
-        sns.barplot(x=temp_df.index, y=temp_df['proportion (%)'])
+        sns.barplot(y=temp_df.index, x=temp_df['proportion (%)'], color='#00B3B3')
         plt.title('Proportion of missing values for features that have missing values')
         plt.show()
 
