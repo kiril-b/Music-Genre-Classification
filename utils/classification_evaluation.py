@@ -5,7 +5,44 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 
 
 class ClassificationEvaluation():
+    """
+    A class for evaluating classification models and generating evaluation metrics.
+
+    Args:
+        model_name (str): The name of the classification model.
+        model: The trained classification model.
+        train_X (pd.DataFrame): The training data features.
+        train_y (pd.Series): The training data labels.
+        val_X (pd.DataFrame): The validation data features.
+        val_y (pd.Series): The validation data labels.
+
+    Attributes:
+        model_name (str): The name of the classification model.
+        model: The trained classification model.
+        train_X (pd.DataFrame): The training data features.
+        train_y (pd.Series): The training data labels.
+        val_X (pd.DataFrame): The validation data features.
+        val_y (pd.Series): The validation data labels.
+        train_y_pred (np.ndarray): Predicted labels on the training data.
+        val_y_pred (np.ndarray): Predicted labels on the validation data.
+
+    Methods:
+        get_scores(on_sets, average_type): Get various classification metrics.
+        plot_confusion_matrix(ax, on_set='validation'): Plot a normalized confusion matrix.
+        plot_metrics_per_class(ax, on_set='validation', horizontal=True): Plot precision, recall, and F1-score per class.
+    """
     def __init__(self, model_name, model, train_X, train_y, val_X, val_y):
+        """
+        Initialize the ClassificationEvaluation instance.
+
+        Args:
+            model_name (str): The name of the classification model.
+            model: The trained classification model.
+            train_X (pd.DataFrame): The training data features.
+            train_y (pd.Series): The training data labels.
+            val_X (pd.DataFrame): The validation data features.
+            val_y (pd.Series): The validation data labels.
+        """
         self.model_name = model_name
         self.model = model
         self.train_X = train_X
@@ -15,7 +52,17 @@ class ClassificationEvaluation():
         self.train_y_pred = self.model.predict(self.train_X)
         self.val_y_pred = self.model.predict(self.val_X)
 
-    def get_scores(self, on_sets, average_type):
+    def get_scores(self, on_sets, average_type='weighted'):
+        """
+        Calculate classification metrics for specified datasets.
+
+        Args:
+            on_sets (list): List of datasets to evaluate (e.g., ['train', 'validation']).
+            average_type (str): Type of averaging for precision, recall, and F1-score (default is 'weighted').
+
+        Returns:
+            pd.DataFrame: DataFrame containing classification metrics for each dataset.
+        """
         if on_sets is None:
             raise Exception("You need to pass an array on_sets, containing strings 'train' and/or 'validation'")
 
@@ -39,6 +86,13 @@ class ClassificationEvaluation():
         return pd.DataFrame(data, columns=index, index=on_sets).T
 
     def plot_confusion_matrix(self, ax, on_set='validation'):
+        """
+        Plot a normalized confusion matrix.
+
+        Args:
+            ax: Matplotlib axis to draw the plot on.
+            on_set (str): Dataset to evaluate (either 'train' or 'validation').
+        """
         if on_set not in ['train', 'validation']:
             raise Exception("The parameter on_set can be either 'train' or 'validation'")
 
@@ -61,6 +115,14 @@ class ClassificationEvaluation():
         ax.set_xlabel('Predicted labels')
 
     def plot_metrics_per_class(self, ax, on_set='validation', horizontal=True):
+        """
+        Plot precision, recall, and F1-score per class.
+
+        Args:
+            ax: Matplotlib axis to draw the plot on.
+            on_set (str): Dataset to evaluate (either 'train' or 'validation').
+            horizontal (bool): If True, plots horizontally; otherwise, vertically.
+        """
         y = self.train_y if on_set == 'train' else self.val_y
         y_pred = self.train_y_pred if on_set == 'train' else self.val_y_pred
         index = sorted(y.unique().tolist())
@@ -80,11 +142,44 @@ class ClassificationEvaluation():
 
 
 class DTClassificationEvaluation(ClassificationEvaluation):
+    """
+    A subclass for evaluating Decision Tree classification models and generating evaluation metrics.
+
+    Args:
+        model_name (str): The name of the classification model.
+        model: The trained classification model.
+        train_X (pd.DataFrame): The training data features.
+        train_y (pd.Series): The training data labels.
+        val_X (pd.DataFrame): The validation data features.
+        val_y (pd.Series): The validation data labels.
+
+    Methods:
+        plot_feature_importances(ax, num_features=10, horizontal=False): Plot feature importances.
+    """
 
     def __init__(self, model_name, model, train_X, train_y, val_X, val_y):
+        """
+        Initialize the DTClassificationEvaluation instance.
+
+        Args:
+            model_name (str): The name of the classification model.
+            model: The trained classification model.
+            train_X (pd.DataFrame): The training data features.
+            train_y (pd.Series): The training data labels.
+            val_X (pd.DataFrame): The validation data features.
+            val_y (pd.Series): The validation data labels.
+        """
         super().__init__(model_name, model, train_X, train_y, val_X, val_y)
 
     def plot_feature_importances(self, ax, num_features=10, horizontal=False):
+        """
+        Plot feature importances.
+
+        Args:
+            ax: Matplotlib axis to draw the plot on.
+            num_features (int): Number of features to plot (default is 10).
+            horizontal (bool): If True, plots horizontally; otherwise, vertically.
+        """
         importances = self.model.feature_importances_
         indices = np.argsort(importances)[::-1]
         names = [str(self.train_X.columns[i]) for i in indices][:num_features]
