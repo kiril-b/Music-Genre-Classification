@@ -1,3 +1,4 @@
+from typing import Union
 import umap
 import pandas as pd
 import seaborn as sns
@@ -7,24 +8,31 @@ import plotly.offline as pyo
 import matplotlib.pyplot as plt
 
 
+from matplotlib.axes import Axes
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-def reduce_dataset(df, features, label_column, genres, reducer, n_components, column_prefix):
+def reduce_dataset(df: pd.DataFrame, 
+                   label_column: str, 
+                   reducer: any, 
+                   n_components: int, 
+                   column_prefix: str, 
+                   genres: list[str] = None, 
+                   features: list[str] = None) -> pd.DataFrame:
     """
-    Reduces the dimensionality of a dataset using a specified reducer technique and returns a DataFrame.
-
-    Parameters:
-    - df (pd.DataFrame): The input DataFrame.
-    - features (list or None): List of feature columns to use for dimensionality reduction, or None to use all columns except label_column.
-    - label_column (str): The column containing the labels for data points.
-    - genres (list or None): List of genres to filter data points, or None to consider all data points.
-    - reducer: The dimensionality reduction technique.
-    - n_components (int): Number of components after dimensionality reduction.
-    - column_prefix (str): Prefix for the column names of the reduced features.
-
+    Reduce dataset dimensions using a dimensionality reduction technique.
+    
+    Args:
+        df (pd.DataFrame): Input DataFrame.
+        label_column (str): The column containing the labels.
+        reducer (any): An instance of a dimensionality reduction technique.
+        n_components (int): Number of components for reduction.
+        column_prefix (str): Prefix for the reduced columns.
+        genres (list[str], optional): List of genres to consider. Defaults to None.
+        features (list[str], optional): List of features to consider. Defaults to None.
+    
     Returns:
-    - pd.DataFrame: A DataFrame containing the reduced features and label_column.
+        pd.DataFrame: Reduced DataFrame with specified columns.
     """
     if features is None:
         feature_df = df.drop(label_column, axis=1, inplace=False).copy()
@@ -47,22 +55,19 @@ def reduce_dataset(df, features, label_column, genres, reducer, n_components, co
 
     return reduced_df
 
-def genre_2d_pca_visualization(df, features, genres, n_components=2, title=None):
+def genre_2d_pca_visualization(df: pd.DataFrame, features: list[str], genres: list[str], n_components: int = 2, title: str = None) -> None:
     """
-    Performs PCA-based dimensionality reduction on genre-labeled data and visualizes it using scatter and KDE plots.
-
-    Parameters:
-    - df (pd.DataFrame): The input DataFrame.
-    - features (list): List of feature columns to use for PCA.
-    - genres (list): List of genres to consider.
-    - n_components (int): Number of components after PCA.
-    - title (str or None): Title for the visualization.
-
-    Returns:
-    - None
+    Visualize genres in 2D using PCA dimensionality reduction.
+    
+    Args:
+        df (pd.DataFrame): Input DataFrame.
+        features (list[str]): List of features for analysis.
+        genres (list[str]): List of genres to visualize.
+        n_components (int, optional): Number of components for PCA. Defaults to 2.
+        title (str, optional): Title for the plot. Defaults to None.
     """
     reducer = PCA(n_components=n_components)
-    reduced_df = reduce_dataset(df, features, 'genre', genres, reducer, n_components, column_prefix='PC_')
+    reduced_df = reduce_dataset(df, 'genre', reducer, n_components, column_prefix='PC_', genres=genres, features=features)
 
     fig, axs = plt.subplots(1, 2, figsize=(18, 7))
     sns.scatterplot(data=reduced_df, x='PC_1', y='PC_2', hue='genre', ax=axs[0])
@@ -71,54 +76,51 @@ def genre_2d_pca_visualization(df, features, genres, n_components=2, title=None)
         fig.suptitle(title)
 
 
-def genre_2d_umap_visualization(df, features, genres, n_components=2, n_neighbors=15, min_dist=0.1, metric='cosine'):
+def genre_2d_umap_visualization(df: pd.DataFrame, features: list[str], 
+                                genres: list[str], n_components:int = 2, 
+                                n_neighbors: int = 15, min_dist: float = 0.1, metric: str = 'cosine') -> None:
     """
-    Performs UMAP-based dimensionality reduction on genre-labeled data and visualizes it using scatter and KDE plots.
-
-    Parameters:
-    - df (pd.DataFrame): The input DataFrame.
-    - features (list): List of feature columns to use for UMAP.
-    - genres (list): List of genres to consider.
-    - n_components (int): Number of components after UMAP.
-    - n_neighbors (int): Number of neighbors for UMAP.
-    - min_dist (float): Minimum distance for UMAP.
-    - metric (str): Distance metric for UMAP.
-
-    Returns:
-    - None
+    Visualize genres in 2D using UMAP dimensionality reduction.
+    
+    Args:
+        df (pd.DataFrame): Input DataFrame.
+        features (list[str]): List of features for analysis.
+        genres (list[str]): List of genres to visualize.
+        n_components (int, optional): Number of components for UMAP. Defaults to 2.
+        n_neighbors (int, optional): Number of neighbors for UMAP. Defaults to 15.
+        min_dist (float, optional): Minimum distance for UMAP. Defaults to 0.1.
+        metric (str, optional): Metric for UMAP distance calculation. Defaults to 'cosine'.
     """
     reducer = umap.UMAP(n_neighbors=n_neighbors, n_components=n_components, metric=metric, min_dist=min_dist)
-    reduced_df = reduce_dataset(df, features, 'genre', genres, reducer, n_components, column_prefix='x')
+    reduced_df = reduce_dataset(df, 'genre', reducer, n_components, column_prefix='x', genres=genres, features=features)
 
     _, axs = plt.subplots(1, 2, figsize=(18, 7))
     sns.scatterplot(data=reduced_df, x='x1', y='x2', hue='genre', ax=axs[0])
     sns.kdeplot(data=reduced_df, x='x1', y='x2', hue='genre', ax=axs[1])
 
 
-def genre_3d_umap_visualization(df, label_column, features=None, genres=None, n_components=2, n_neighbors=15, min_dist=0.1, metric='cosine', output_file=None):
+def genre_3d_umap_visualization(df: pd.DataFrame, label_column: str, 
+                                n_components:int = 2, n_neighbors:int = 15, min_dist: float = 0.1, metric: str = 'cosine',
+                                  features: list[str] = None, genres: list[str] = None, output_file: str = None) -> None:
     """
-    Performs 3D UMAP-based dimensionality reduction on genre-labeled data and visualizes it using a 3D scatter plot.
-
-    Parameters:
-    - df (pd.DataFrame): The input DataFrame.
-    - label_column (str): The column containing the labels for data points.
-    - features (list or None): List of feature columns to use for UMAP, or None to use all columns except label_column.
-    - genres (list or None): List of genres to filter data points, or None to consider all data points (If genres is not None, label column should be 'genre').
-    - n_components (int): Number of components after UMAP.
-    - n_neighbors (int): Number of neighbors for UMAP.
-    - min_dist (float): Minimum distance for UMAP.
-    - metric (str): Distance metric for UMAP.
-    - output_file (str or None): File name to save the plot, or None to only display the plot.
-
-    Returns:
-    - None
+    Visualize genres in 3D using UMAP dimensionality reduction.
+    
+    Args:
+        df (pd.DataFrame): Input DataFrame.
+        label_column (str): The column containing the labels.
+        n_components (int, optional): Number of components for UMAP. Defaults to 2.
+        n_neighbors (int, optional): Number of neighbors for UMAP. Defaults to 15.
+        min_dist (float, optional): Minimum distance for UMAP. Defaults to 0.1.
+        metric (str, optional): Metric for UMAP distance calculation. Defaults to 'cosine'.
+        features (list[str], optional): List of features to consider. Defaults to None.
+        genres (list[str], optional): List of genres to consider. Defaults to None.
+        output_file (str, optional): Output file name for saving the plot. Defaults to None.
     """
-     
     if genres is not None and label_column != 'genre':
         raise Exception("If 'genres' is not None, label column should be 'genre'")
 
     reducer = umap.UMAP(n_neighbors=n_neighbors, n_components=n_components, metric=metric, min_dist=min_dist)
-    reduced_df = reduce_dataset(df, features, label_column, genres, reducer, n_components, column_prefix='x')
+    reduced_df = reduce_dataset(df, label_column, reducer, n_components, column_prefix='x', genres=genres, features=features)
     
     fig_3d = px.scatter_3d(
         reduced_df.drop(label_column, axis=1, inplace=False), 
@@ -134,16 +136,16 @@ def genre_3d_umap_visualization(df, label_column, features=None, genres=None, n_
         pyo.plot(fig_3d, filename=f'./plots/{output_file}')
 
 
-def corr_heatmap(df, axis_label, title, method='pearson', figsize=(25, 18)):
+def corr_heatmap(df: pd.DataFrame, axis_label: str, title: str, method: str = 'pearson', figsize: tuple[int, int] = (25, 18)) -> None:
     """
-    Create a heatmap to visualize the correlation between features in a DataFrame.
-
+    Plot a correlation heatmap for the DataFrame.
+    
     Args:
-        df (pd.DataFrame): The input DataFrame.
-        axis_label (str): Label for the axis.
-        title (str): Title of the heatmap.
-        method (str): Correlation method (default is 'pearson').
-        figsize (tuple): Figure size (width, height).
+        df (pd.DataFrame): Input DataFrame.
+        axis_label (str): Label for x and y axes.
+        title (str): Title of the plot.
+        method (str, optional): Correlation method. Defaults to 'pearson'.
+        figsize (tuple[int, int], optional): Figure size. Defaults to (25, 18).
     """
     plt.figure(figsize=figsize)
     sns.heatmap(
@@ -159,13 +161,13 @@ def corr_heatmap(df, axis_label, title, method='pearson', figsize=(25, 18)):
     plt.show()
 
 
-def plot_qq(df, figsize):
+def plot_qq(df: pd.DataFrame, figsize: tuple[int, int]) -> None:
     """
-    Create Q-Q plots to visualize the distribution of features in comparison to a normal distribution.
-
+    Plot Q-Q plots for each column in the DataFrame.
+    
     Args:
-        df (pd.DataFrame): The input DataFrame.
-        figsize (tuple): Figure size (width, height).
+        df (pd.DataFrame): Input DataFrame.
+        figsize (tuple[int, int]): Figure size.
     """
     columns = df.shape[1]
     _, ax = plt.subplots(1, columns, figsize=figsize)
@@ -177,16 +179,13 @@ def plot_qq(df, figsize):
     plt.show()
 
 
-def plot_outliers_per_genre(pca_df, outliers_indexes):
+def plot_outliers_per_genre(pca_df: pd.DataFrame, outliers_indexes: Union[pd.Index, list]) -> None:
     """
-    Plots outliers detected within different genres using a scatter plot.
-
-    Parameters:
-    pca_df (DataFrame): A DataFrame containing PCA-transformed data along with genre labels.
-    outliers_indexes (list or array-like): Indexes of the outliers to be highlighted in the plot.
-
-    Returns:
-    None
+    Plot scatter plots of PCA components with detected outliers highlighted.
+    
+    Args:
+        pca_df (pd.DataFrame): DataFrame containing PCA components.
+        outliers_indexes (Union[pd.Index, list]): Indexes of detected outliers.
     """
     fig, axs = plt.subplots(4, 4, figsize=(20, 20))
     axs_tuples = [(i,j) for i in range (0, 4) for j in range (0, 4)]
@@ -206,16 +205,13 @@ def plot_outliers_per_genre(pca_df, outliers_indexes):
         k += 1
 
 
-def plot_num_outliers_per_genre(df, outliers_indexes):
+def plot_num_outliers_per_genre(df: pd.DataFrame, outliers_indexes: Union[pd.Index, list]) -> None:
     """
-    Plots the number of outliers detected per genre using a bar plot.
-
-    Parameters:
-    df (DataFrame): A DataFrame containing data with genre labels.
-    outliers_indexes (list or array-like): Indexes of the outliers to be counted and plotted.
-
-    Returns:
-    None
+    Plot a bar plot of the number of outliers per genre.
+    
+    Args:
+        df (pd.DataFrame): Input DataFrame.
+        outliers_indexes (Union[pd.Index, list]): Indexes of detected outliers.
     """
     outliers_by_genre = df.loc[outliers_indexes]['genre'].value_counts()
     plt.figure(figsize=(10, 9))
@@ -224,15 +220,15 @@ def plot_num_outliers_per_genre(df, outliers_indexes):
     plt.show()
 
 
-def plot_cluster_similarities(label, label_value, similarities_df, ax):
+def plot_cluster_similarities(label: str, label_value: str, similarities_df: pd.DataFrame, ax: Axes) -> None:
     """
-    Plot cluster similarities for a specific cluster label.
-
+    Plot bar plot of cluster similarities for a specific label value.
+    
     Args:
-        label (str): The cluster label column name.
-        label_value (str): The specific cluster label value to plot.
-        similarities_df (pd.DataFrame): DataFrame containing cluster similarities.
-        ax (matplotlib.axes.Axes): The axis to plot the bar chart.
+        label (str): Label for the clusters (e.g., 'genre').
+        label_value (str): Value of the label to plot similarities for.
+        similarities_df (pd.DataFrame): DataFrame containing cluster similarity data.
+        ax (Axes): Matplotlib axis to plot on.
     """
     similarities_df = similarities_df.query(f'{label}_1 == "{label_value}" or {label}_2 == "{label_value}"').sort_values(by='similarity', ascending=False)
     similarities_df[label] = similarities_df[f'{label}_1'].str.cat(similarities_df[f'{label}_2'], sep=' <-> ')

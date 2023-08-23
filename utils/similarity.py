@@ -1,8 +1,10 @@
-from itertools import combinations
+import os
 
 import numpy as np
 import pandas as pd
 import seaborn as sns
+
+from itertools import combinations
 
 from sklearn.metrics.pairwise import euclidean_distances
 
@@ -57,5 +59,6 @@ def calculate_cluster_similarities(df, label, features):
         results.append([c1, c2, average_similarity(c1_features, c2_features)])
 
     return pd.DataFrame(results, columns=[f'{label}_1', f'{label}_2', 'similarity'])
+
 
 
