@@ -12,3 +12,7 @@ plotly
 umap-learn
 python-dotenv
 tqdm
+pydantic
+xgboost
+tensorflow
+kneed

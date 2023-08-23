@@ -4,8 +4,14 @@
 #
 #    pip-compile '.\requirements.in'
 #
+absl-py==1.4.0
+    # via
+    #   tensorboard
+    #   tensorflow-intel
 adjusttext==0.8
     # via pca
+annotated-types==0.5.0
+    # via pydantic
 anyio==3.7.1
     # via jupyter-server
 argon2-cffi==21.3.0
@@ -16,6 +22,8 @@ arrow==1.2.3
     # via isoduration
 asttokens==2.2.1
     # via stack-data
+astunparse==1.6.3
+    # via tensorflow-intel
 async-lru==2.0.4
     # via jupyterlab
 attrs==23.1.0
@@ -30,6 +38,8 @@ beautifulsoup4==4.12.2
     # via nbconvert
 bleach==6.0.0
     # via nbconvert
+cachetools==5.3.1
+    # via google-auth
 certifi==2023.7.22
     # via requests
 cffi==1.15.1
@@ -66,10 +76,28 @@ executing==1.2.0
     # via stack-data
 fastjsonschema==2.18.0
     # via nbformat
+flatbuffers==23.5.26
+    # via tensorflow-intel
 fonttools==4.42.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
+gast==0.4.0
+    # via tensorflow-intel
+google-auth==2.17.3
+    # via
+    #   google-auth-oauthlib
+    #   tensorboard
+google-auth-oauthlib==1.0.0
+    # via tensorboard
+google-pasta==0.2.0
+    # via tensorflow-intel
+grpcio==1.57.0
+    # via
+    #   tensorboard
+    #   tensorflow-intel
+h5py==3.9.0
+    # via tensorflow-intel
 idna==3.4
     # via
     #   anyio
@@ -98,6 +126,8 @@ ipywidgets==8.1.0
     # via jupyter
 isoduration==20.11.0
     # via jsonschema
+jax==0.4.14
+    # via tensorflow-intel
 jedi==0.19.0
     # via ipython
 jinja2==3.1.2
@@ -168,16 +198,25 @@ jupyterlab-server==2.24.0
     #   notebook
 jupyterlab-widgets==3.0.8
     # via ipywidgets
+keras==2.12.0
+    # via tensorflow-intel
 kiwisolver==1.4.4
     # via matplotlib
+kneed==0.8.5
+    # via -r .\requirements.in
+libclang==16.0.6
+    # via tensorflow-intel
 llvmlite==0.40.1
     # via
     #   numba
     #   pynndescent
+markdown==3.4.4
+    # via tensorboard
 markupsafe==2.1.3
     # via
     #   jinja2
     #   nbconvert
+    #   werkzeug
 matplotlib==3.7.2
     # via
     #   -r .\requirements.in
@@ -192,6 +231,8 @@ matplotlib-inline==0.1.6
     #   ipython
 mistune==3.0.1
     # via nbconvert
+ml-dtypes==0.2.0
+    # via jax
 nbclient==0.8.0
     # via nbconvert
 nbconvert==7.7.3
@@ -215,16 +256,21 @@ numba==0.57.1
     # via
     #   pynndescent
     #   umap-learn
-numpy==1.24.4
+numpy==1.23.5
     # via
     #   -r .\requirements.in
     #   adjusttext
     #   colourmap
     #   contourpy
     #   datazets
+    #   h5py
     #   imbalanced-learn
+    #   jax
+    #   kneed
     #   matplotlib
+    #   ml-dtypes
     #   numba
+    #   opt-einsum
     #   pandas
     #   patsy
     #   pca
@@ -233,7 +279,16 @@ numpy==1.24.4
     #   scipy
     #   seaborn
     #   statsmodels
+    #   tensorboard
+    #   tensorflow-intel
     #   umap-learn
+    #   xgboost
+oauthlib==3.2.2
+    # via requests-oauthlib
+opt-einsum==3.3.0
+    # via
+    #   jax
+    #   tensorflow-intel
 overrides==7.4.0
     # via jupyter-server
 packaging==23.1
@@ -248,6 +303,7 @@ packaging==23.1
     #   qtconsole
     #   qtpy
     #   statsmodels
+    #   tensorflow-intel
 pandas==2.0.3
     # via
     #   -r .\requirements.in
@@ -277,12 +333,26 @@ prompt-toolkit==3.0.39
     # via
     #   ipython
     #   jupyter-console
+protobuf==4.24.1
+    # via
+    #   tensorboard
+    #   tensorflow-intel
 psutil==5.9.5
     # via ipykernel
 pure-eval==0.2.2
     # via stack-data
+pyasn1==0.5.0
+    # via
+    #   pyasn1-modules
+    #   rsa
+pyasn1-modules==0.3.0
+    # via google-auth
 pycparser==2.21
     # via cffi
+pydantic==2.1.1
+    # via -r .\requirements.in
+pydantic-core==2.4.0
+    # via pydantic
 pygments==2.16.1
     # via
     #   ipython
@@ -334,6 +404,10 @@ requests==2.31.0
     # via
     #   datazets
     #   jupyterlab-server
+    #   requests-oauthlib
+    #   tensorboard
+requests-oauthlib==1.3.1
+    # via google-auth-oauthlib
 rfc3339-validator==0.1.4
     # via
     #   jsonschema
@@ -346,6 +420,8 @@ rpds-py==0.9.2
     # via
     #   jsonschema
     #   referencing
+rsa==4.9
+    # via google-auth
 scatterd==1.3.6
     # via pca
 scikit-learn==1.3.0
@@ -358,11 +434,14 @@ scikit-learn==1.3.0
 scipy==1.11.1
     # via
     #   imbalanced-learn
+    #   jax
+    #   kneed
     #   pca
     #   pynndescent
     #   scikit-learn
     #   statsmodels
     #   umap-learn
+    #   xgboost
 seaborn==0.12.2
     # via
     #   -r .\requirements.in
@@ -372,10 +451,14 @@ send2trash==1.8.2
 six==1.16.0
     # via
     #   asttokens
+    #   astunparse
     #   bleach
+    #   google-auth
+    #   google-pasta
     #   patsy
     #   python-dateutil
     #   rfc3339-validator
+    #   tensorflow-intel
 sniffio==1.3.0
     # via anyio
 soupsieve==2.4.1
@@ -386,6 +469,20 @@ statsmodels==0.14.0
     # via pca
 tenacity==8.2.3
     # via plotly
+tensorboard==2.12.3
+    # via tensorflow-intel
+tensorboard-data-server==0.7.1
+    # via tensorboard
+tensorflow==2.12.0
+    # via -r .\requirements.in
+tensorflow-estimator==2.12.0
+    # via tensorflow-intel
+tensorflow-intel==2.12.0
+    # via tensorflow
+tensorflow-io-gcs-filesystem==0.31.0
+    # via tensorflow-intel
+termcolor==2.3.0
+    # via tensorflow-intel
 terminado==0.17.1
     # via
     #   jupyter-server
@@ -425,6 +522,11 @@ traitlets==5.9.0
     #   nbconvert
     #   nbformat
     #   qtconsole
+typing-extensions==4.7.1
+    # via
+    #   pydantic
+    #   pydantic-core
+    #   tensorflow-intel
 tzdata==2023.3
     # via pandas
 umap-learn==0.5.3
@@ -443,5 +545,18 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.6.1
     # via jupyter-server
+werkzeug==2.3.7
+    # via tensorboard
+wheel==0.41.1
+    # via
+    #   astunparse
+    #   tensorboard
 widgetsnbextension==4.0.8
     # via ipywidgets
+wrapt==1.14.1
+    # via tensorflow-intel
+xgboost==1.7.6
+    # via -r .\requirements.in
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
