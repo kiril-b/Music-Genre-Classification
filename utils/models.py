@@ -1,6 +1,7 @@
 import pandas as pd
 from pydantic import BaseModel
 
+
 class SplitDataset(BaseModel):
     """
     Represents a split dataset with features and labels.
@@ -12,11 +13,13 @@ class SplitDataset(BaseModel):
     Config:
         arbitrary_types_allowed (bool): Whether arbitrary types are allowed for the attributes.
     """
+
     X: pd.DataFrame
     y: pd.Series
 
     class Config:
         arbitrary_types_allowed = True
+
 
 class Dataset(BaseModel):
     """
@@ -28,6 +31,7 @@ class Dataset(BaseModel):
         val (SplitDataset): The validation split.
         test (SplitDataset): The test split.
     """
+
     name: str
     train: SplitDataset
     val: SplitDataset

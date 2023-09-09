@@ -25,14 +25,15 @@ class MissingValuesUtil:
                         for features with missing values.
 
     """
+
     def __init__(self, df: pd.DataFrame):
         self.df = df
         self.mv_df = pd.DataFrame(
-                [df.isna().sum(), df.isna().mean() * 100.0],
-                index=['count', 'proportion (%)'],
-                columns=df.columns
-            ).T
-        self.rows_with_mv = self.mv_df['count'] != 0
+            [df.isna().sum(), df.isna().mean() * 100.0],
+            index=["count", "proportion (%)"],
+            columns=df.columns,
+        ).T
+        self.rows_with_mv = self.mv_df["count"] != 0
 
     def get_mvdf(self) -> pd.DataFrame:
         """
@@ -83,8 +84,9 @@ class MissingValuesUtil:
         None
         """
         plt.figure(figsize=(w, h))
-        temp_df = self.get_mvdf_missing_only().sort_values(by='proportion (%)', ascending=False)
-        sns.barplot(y=temp_df.index, x=temp_df['proportion (%)'], color='#00B3B3')
-        plt.title('Proportion of missing values for features that have missing values')
+        temp_df = self.get_mvdf_missing_only().sort_values(
+            by="proportion (%)", ascending=False
+        )
+        sns.barplot(y=temp_df.index, x=temp_df["proportion (%)"], color="#00B3B3")
+        plt.title("Proportion of missing values for features that have missing values")
         plt.show()
-

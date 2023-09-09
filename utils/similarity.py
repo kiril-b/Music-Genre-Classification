@@ -21,7 +21,8 @@ def rbf_kernel(x, y, gamma):
     Returns:
         ndarray: The RBF kernel matrix.
     """
-    return np.exp(-gamma * euclidean_distances(x, y)**2)
+    return np.exp(-gamma * euclidean_distances(x, y) ** 2)
+
 
 def average_similarity(cluster1, cluster2):
     """
@@ -34,7 +35,7 @@ def average_similarity(cluster1, cluster2):
     Returns:
         float: The average similarity between the clusters.
     """
-    similarity_matrix = rbf_kernel(cluster1, cluster2, 1 / (len(cluster1.columns)*4))
+    similarity_matrix = rbf_kernel(cluster1, cluster2, 1 / (len(cluster1.columns) * 4))
     total_similarity = np.sum(similarity_matrix)
     average_similarity = total_similarity / (len(cluster1) * len(cluster2))
     return average_similarity
@@ -58,7 +59,4 @@ def calculate_cluster_similarities(df, label, features):
         c2_features = df[df[label] == c2][features]
         results.append([c1, c2, average_similarity(c1_features, c2_features)])
 
-    return pd.DataFrame(results, columns=[f'{label}_1', f'{label}_2', 'similarity'])
-
-
-
+    return pd.DataFrame(results, columns=[f"{label}_1", f"{label}_2", "similarity"])
