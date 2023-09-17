@@ -45,7 +45,7 @@ class ClassificationEvaluation:
         self,
         dataset: Dataset,
         classifier: ClassifierMixin,
-        encoder: ClassifierMixin = None,
+        encoder: ClassifierMixin | None = None,
     ):
         """
         Initialize the ClassificationEvaluation instance.
@@ -83,7 +83,7 @@ class ClassificationEvaluation:
         self.predictions_made = True
 
     def get_scores(
-        self, on_sets: list[str] = None, average_type: str = "weighted"
+        self, on_sets: list[str] | None = None, average_type: str = "weighted"
     ) -> pd.DataFrame:
         """
         Calculate evaluation scores for specified datasets.

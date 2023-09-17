@@ -32,7 +32,7 @@ class DatasetsWrapper:
         self.data_dict = {dataset.name: dataset for dataset in datasets}
 
     def scale_datasets(
-        self, scaler: TransformerMixin, exclude: list[str] = None
+        self, scaler: TransformerMixin, exclude: list[str] | None = None
     ) -> None:
         """Scale the datasets using the provided scaler.
 

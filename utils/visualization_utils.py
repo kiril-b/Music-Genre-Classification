@@ -67,7 +67,7 @@ def genre_2d_pca_visualization(
     features: list[str],
     genres: list[str],
     n_components: int = 2,
-    title: str = None,
+    title: str | None = None,
 ) -> None:
     """
     Visualize genres in 2D using PCA dimensionality reduction.

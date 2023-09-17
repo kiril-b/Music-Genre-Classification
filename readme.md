@@ -63,12 +63,18 @@ The diagram below illustrates how each of these features is measured. Essentiall
 
 <img src="images/classifiers.png" alt="drawing" width="800"/>
 
+## References
+- <a href="https://arxiv.org/pdf/1612.01840.pdf">Dataset Creation</a>
+- <a href="https://arxiv.org/pdf/1106.1813.pdf">SMOTE: Synthetic Minority Over-sampling Technique</a>
+- <a href="https://hcsi.cs.tsinghua.edu.cn/Paper/Paper02/200218.pdf">Music Type Classification by Spectral Contrast Feature</a>
+- <a href="https://musicinformationretrieval.com/">Audio features - explanations</a>
+
 ## Cloning the repository and running the code
 After cloning the repository, set up your virtual environment:
 ```bash
 python -m venv .venv
 ```
-Avtivate it
+Activate it
 ```
 .venv\Scripts\activate.bat # on Windows
 source .venv/bin/activate  # on Linux
@@ -77,10 +83,7 @@ Install pip-tools
 ```bash
 python -m pip install pip-tools
 ```
-Compile and install requirements
-```bash
-pip-compile requirements.in
-```
+Install requirements
 ```bash
 pip-sync requirements.txt
 ```
